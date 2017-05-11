@@ -27,7 +27,10 @@ namespace CN3
         public MainWindow()
         {
             InitializeComponent();
-            dispatcherTimer.Tick += (sender, args) => { _graph.Update(); };
+            dispatcherTimer.Tick += (sender, args) =>
+            {
+                _graph.Update();
+            };
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
         }
@@ -137,6 +140,7 @@ namespace CN3
         private void AddMessage(string message)
         {
             answersBox.AppendText(String.Format("{0}\n> ", message));
+            answersBox.ScrollToEnd();
         }
     }
 }
