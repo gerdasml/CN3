@@ -10,7 +10,16 @@ namespace CN3
     {
         private Dictionary<Node, int> _distances = new Dictionary<Node, int>();
         private Dictionary<Node, Node> _hopes = new Dictionary<Node, Node>();
-
+        public IEnumerable<DistanceViktorRow> Rows
+        {
+            get
+            {
+                foreach (var item in _distances.Keys)
+                {
+                    yield return new DistanceViktorRow(item, _distances[item], _hopes[item]);
+                }
+            }
+        }
         public DistanceViktor(Node source)
         {
             _distances.Add(source, 0);

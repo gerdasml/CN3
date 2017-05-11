@@ -15,19 +15,22 @@ namespace CN3
         public Node(string name)
         {
             Name = name;
+            Viktor = new DistanceViktor(this);
         }
 
         public void AddNeighbour(Node node, int weight)
         {
             if (!_neighbours.ContainsKey(node))
+            {
                 _neighbours.Add(node, weight);
-            else _neighbours[node] = weight;
+                _viktors.Add(node, node.Viktor);
+            }
+            else _neighbours[node] = Math.Min(weight, _neighbours[node]);
         }
 
-        public void RemoveNeighbour(Node node)
+        public bool RemoveNeighbour(Node node)
         {
-            if (!_neighbours.ContainsKey(node)) return;
-            _neighbours.Remove(node);
+            return _neighbours.Remove(node);
         }
 
         public bool NeighbourExists(Node node)
@@ -37,7 +40,29 @@ namespace CN3
 
         public void Update()
         {
+            var viktor = new DistanceViktor(this);
+            foreach (var neighbour in _neighbours.Keys)
+            {
+                var nv = _viktors[neighbour];
+                foreach (var row in nv.Rows)
+                {
+                    viktor.AddRow(row.Destination, row.Distance + _neighbours[neighbour], neighbour);
+                }
+            }
+            Viktor = viktor;
+            foreach (var neighbour in _neighbours.Keys)
+            {
+                neighbour.SetDistanceViktor(this, Viktor);
+            }
+        }
 
+        public void SetDistanceViktor(Node node, DistanceViktor dv)
+        {
+            if (!_viktors.ContainsKey(node))
+            {
+                _viktors.Add(node, dv);
+            }
+            _viktors[node] = dv;
         }
         #region Equals
         public bool Equals(Node other)

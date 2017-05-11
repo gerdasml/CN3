@@ -64,6 +64,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DistanceViktor.cs" />
+    <Compile Include="DistanceViktorRow.cs" />
     <Compile Include="Graph.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

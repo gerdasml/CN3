@@ -8,60 +8,58 @@ namespace CN3
 {
     class Graph
     {
-        private List<Node> _nodes = new List<Node>();
-        public void AddNode(string name)
+        private HashSet<Node> _nodes = new HashSet<Node>();
+        public bool AddNode(string name)
         {
             Node node = new Node(name);
-            _nodes.Add(node);
+            return _nodes.Add(node);
         }
 
-        public void RemoveNode(string name)
+        public bool RemoveNode(string name)
         {
-            _nodes.RemoveAll(x => x.Name == name);
+            return _nodes.Remove(new Node(name));
             //uzupdate'int lenteles dar reikes
         }
 
-        public void AddEdge(string name1, string name2, int weight)
+        public bool AddEdge(string name1, string name2, int weight)
         {
-            if(_nodes.Exists(x => x.Name == name1) && _nodes.Exists(x => x.Name == name2))
+            if(_nodes.Contains(new Node(name1)) && _nodes.Contains(new Node(name2)))
             {
                 var node1 = _nodes.Where(x => x.Name == name1).FirstOrDefault();
                 var node2 = _nodes.Where(x => x.Name == name2).FirstOrDefault();
                 node1.AddNeighbour(node2, weight);
                 node2.AddNeighbour(node1, weight);
-                return;
+                return true;
             }
-            throw new Exception("At least one of the specifiend nodes does not exist.");
+            return false;
         }
 
-        public void RemoveEdge(string name1, string name2)
+        public bool RemoveEdge(string name1, string name2)
         {
-            if(_nodes.Exists(x => x.Name == name1) && _nodes.Exists(x => x.Name == name2))
+            if(_nodes.Contains(new Node(name1)) && _nodes.Contains(new Node(name2)))
             {
                 var node1 = _nodes.Where(x => x.Name == name1).FirstOrDefault();
                 var node2 = _nodes.Where(x => x.Name == name2).FirstOrDefault();
-                node1.RemoveNeighbour(node2);
-                node2.RemoveNeighbour(node1);
-                return;
+                return (node1.RemoveNeighbour(node2) & node2.RemoveNeighbour(node1));
             }
-            throw new Exception("At least one of the specified nodes does not exist.");
+            return false;
         }
 
-        public void EditEdge(string name1, string name2, int weight)
+        public bool EditEdge(string name1, string name2, int weight)
         {
-            if (_nodes.Exists(x => x.Name == name1) && _nodes.Exists(x => x.Name == name2))
+            if (_nodes.Contains(new Node(name1)) && _nodes.Contains(new Node(name2)))
             {
                 var node1 = _nodes.Where(x => x.Name == name1).FirstOrDefault();
                 var node2 = _nodes.Where(x => x.Name == name2).FirstOrDefault();
                 if(node1.NeighbourExists(node2) && node2.NeighbourExists(node1))
                 {
+                    RemoveEdge(name1, name2);
                     node1.AddNeighbour(node2, weight);
                     node2.AddNeighbour(node1, weight);
-                    return;
+                    return true;
                 }
-                throw new Exception("Edge does not exist.");
             }
-            throw new Exception("At least one of the specified nodes does not exist.");
+            return false;
         }
 
         public void Update()
@@ -70,6 +68,25 @@ namespace CN3
             {
                 item.Update();
             }
+        }
+
+        public List<Node> GetShortestPath(string startName, string endName)
+        {
+            List<Node> list = new List<Node>();
+            var start = _nodes.Where(x => x.Name == startName).FirstOrDefault();
+            var end = _nodes.Where(x => x.Name == endName).FirstOrDefault();
+            if (start == null || end == null) return null;
+            list.Add(start);
+            var current = start;
+            while (current != end)
+            {
+                var smth = current.Viktor.Rows.Where(x => x.Destination == end).FirstOrDefault();
+                if (smth == null) return null;
+                if (list.Contains(smth.Hop)) return null;
+                list.Add(smth.Hop);
+                current = smth.Hop;
+            }
+            return list;
         }
     }
 }
