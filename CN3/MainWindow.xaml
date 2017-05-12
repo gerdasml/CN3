@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CN3"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="650" Width="600">
     <Grid>
-        <TextBox x:Name="inputBox" HorizontalAlignment="Left" Height="63" Margin="10,246,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="497" KeyDown="inputBox_KeyDown"/>
-        <TextBox x:Name="tablesBox" HorizontalAlignment="Left" IsReadOnly="True" Height="231" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="204"/>
-        <TextBox x:Name="answersBox" HorizontalAlignment="Left" IsReadOnly="True" Height="231" Margin="219,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Text="> " Width="288"/>
+        <TextBox x:Name="inputBox"  HorizontalAlignment="Left" Height="23" Margin="10,586,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="572" KeyDown="inputBox_KeyDown"/>
+        <TextBox x:Name="tablesBox" ScrollViewer.VerticalScrollBarVisibility="Auto" FontFamily="Courier New" HorizontalAlignment="Left" IsReadOnly="True" Height="571" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="364"/>
+        <TextBox x:Name="answersBox" ScrollViewer.VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" IsReadOnly="True" Height="571" Margin="379,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Text="> " Width="203"/>
 
     </Grid>
 </Window>

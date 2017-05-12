@@ -12,6 +12,15 @@ namespace CN3
         private Dictionary<Node, int> _neighbours = new Dictionary<Node, int>();
         private Dictionary<Node, DistanceViktor> _viktors = new Dictionary<Node, DistanceViktor>();
         public DistanceViktor Viktor { get; private set; }
+
+        public IEnumerable<Node> Neighbours
+        {
+            get
+            {
+                return _neighbours.Keys;
+            }
+        }
+
         public Node(string name)
         {
             Name = name;
@@ -30,7 +39,7 @@ namespace CN3
 
         public bool RemoveNeighbour(Node node)
         {
-            return _neighbours.Remove(node);
+            return _neighbours.Remove(node) & _viktors.Remove(node);
         }
 
         public bool NeighbourExists(Node node)

@@ -23,13 +23,66 @@ namespace CN3
     {
         private Graph _graph = new Graph();
         DispatcherTimer dispatcherTimer = new DispatcherTimer();
-        
+
+        private string GenerateTable()
+        {
+            var entries = new Dictionary<Node, List<DistanceViktorRow>>();
+            foreach(var node in _graph.Nodes)
+            {
+                entries.Add(node, new List<DistanceViktorRow>());
+                foreach(var row in node.Viktor.Rows)
+                {
+                    entries[node].Add(row);
+                }
+            }
+            if (entries.Count == 0)
+                return "The graph is empty.";
+            int maxSourceLen = Math.Max("Source".Length, entries.Keys.Select(x => x.Name.Length).Max());
+            int maxDestinationLen = Math.Max("Destination".Length, entries.Values.SelectMany(x => x.Select(y => y.Destination)).Select(x => x.Name.Length).Max());
+            int maxDistanceLen = Math.Max("Distance".Length, entries.Values.SelectMany(x => x.Select(y => y.Distance)).Select(x => x.ToString().Length).Max());
+            int maxHopLen = Math.Max("Hop".Length, entries.Values.SelectMany(x => x.Select(y => y.Hop)).Select(x => x.Name.Length).Max());
+            string separator = "+";
+            separator += new string('-', maxSourceLen + 2) + "+";
+            separator += new string('-', maxDestinationLen + 2) + "+";
+            separator += new string('-', maxDistanceLen + 2) + "+";
+            separator += new string('-', maxHopLen + 2) + "+";
+            string table = separator + Environment.NewLine;
+            table += "|" + PadString("Source", maxSourceLen + 2) +
+                     "|" + PadString("Destination", maxDestinationLen + 2) +
+                     "|" + PadString("Distance", maxDistanceLen + 2) +
+                     "|" + PadString("Hop", maxHopLen + 2) + "|" + Environment.NewLine;
+            table += separator + Environment.NewLine;
+            foreach (var source in entries.Keys.OrderBy(x => x.Name))
+            {
+                int rowIndex = (entries[source].Count - 1) / 2;
+                int index = 0;
+                foreach(var row in entries[source].OrderBy(x => x.Destination.Name))
+                {
+                    table += "|" + PadString((index == rowIndex ? source.Name : ""), maxSourceLen + 2) +
+                             "|" + PadString(row.Destination.Name, maxDestinationLen + 2) +
+                             "|" + PadString(row.Distance.ToString(), maxDistanceLen + 2) +
+                             "|" + PadString(row.Hop.Name, maxHopLen + 2) + "|" + Environment.NewLine;
+                    index++;
+                }
+                table += separator + Environment.NewLine;
+            }
+            return table;
+
+        }
+
+        private string PadString(string s, int length)
+        {
+            int spaces = length - s.Length;
+            int padLeft = spaces / 2 + s.Length;
+            return s.PadLeft(padLeft).PadRight(length);
+        }
         public MainWindow()
         {
             InitializeComponent();
             dispatcherTimer.Tick += (sender, args) =>
             {
                 _graph.Update();
+                tablesBox.Text = GenerateTable();
             };
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();

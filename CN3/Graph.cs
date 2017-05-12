@@ -9,6 +9,15 @@ namespace CN3
     class Graph
     {
         private HashSet<Node> _nodes = new HashSet<Node>();
+
+        public IEnumerable<Node> Nodes
+        {
+            get
+            {
+                foreach (var node in _nodes)
+                    yield return node;
+            }
+        }
         public bool AddNode(string name)
         {
             Node node = new Node(name);
@@ -17,6 +26,11 @@ namespace CN3
 
         public bool RemoveNode(string name)
         {
+            var node = _nodes.Where(x => x.Name == name).FirstOrDefault();
+            if (node == null)
+                return false;
+            foreach (var neigh in node.Neighbours.ToList())
+                RemoveEdge(name, neigh.Name);
             return _nodes.Remove(new Node(name));
             //uzupdate'int lenteles dar reikes
         }

@@ -8,6 +8,7 @@ namespace CN3
 {
     class DistanceViktor
     {
+        private const int MaxDistance = 5000;
         private Dictionary<Node, int> _distances = new Dictionary<Node, int>();
         private Dictionary<Node, Node> _hopes = new Dictionary<Node, Node>();
         public IEnumerable<DistanceViktorRow> Rows
@@ -27,6 +28,8 @@ namespace CN3
         }
         public void AddRow(Node destination, int distance, Node hop)
         {
+            if (distance > MaxDistance)
+                return;
             if (!(_distances.ContainsKey(destination) && _hopes.ContainsKey(destination)))
             {
                 _distances.Add(destination, distance);
